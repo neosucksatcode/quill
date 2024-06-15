@@ -10,7 +10,6 @@
 #include <string.h>
 
 #include "../config.h"
-#include "../../return.h"
 #include "../../define.h"
 
 #define ANSI_COLOR_WHITE "\033[0m"
@@ -115,7 +114,7 @@ int free_Window(QuillWindow *window)
   return QUILL_SUCCESS;
 }
 
-int fill_Window(QuillWindow *window, const int color, const char fill)
+int fill_Window(QuillWindow *window, const u8 color, const char fill)
 {
   if (window == NULL)
     return WINDOW_IS_NULL;
@@ -143,7 +142,7 @@ int clear_Window(QuillWindow *window)
 
   for (u32 i = 0; i < window->height * window->width; ++i) {
     window->pixels[i] = ' ';
-    window->colors[i] = 0;
+    window->colors[i] = ANSI_WHITE;
   }
 
   return QUILL_SUCCESS;
