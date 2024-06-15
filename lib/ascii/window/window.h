@@ -1,9 +1,5 @@
-#ifndef QUILL_WINDOW_H_
-#define QUILL_WINDOW_H_
-
-#include "../definitions.h"
-
-#ifdef QUILL_ASCII_
+#ifndef QUILL_ASCII_WINDOW_H_
+#define QUILL_ASCII_WINDOW_H_
 
 #pragma once
 #include <stdbool.h>
@@ -11,8 +7,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <string.h>
 
 #include "../config.h"
+#include "../../return.h"
+#include "../define/define.h"
 
 #define ANSI_COLOR_WHITE "\033[0m"
 #define ANSI_COLOR_RED "\x1b[31m"
@@ -28,85 +27,77 @@
 #define ANSI_YELLOW 4
 #define ANSI_MAGENTA 5
 
-int init_Window(Quill_Window *window, const u32 width, const u32 height) {
-  int QUILL_ERROR = QUILL_SUCCESS;
+void clear_Terminal(void) { puts("\033[2J\033[H"); }
+
+int init_Window(QuillWindow *window, const u32 width, const u32 height) {
   size_t size =
       (size_t)(height * width * HEIGHT_TO_WIDTH_PIXEL_DIMENSION_RATIO);
 
   window->pixels = (char *)malloc(sizeof(char) * size);
   if (window->pixels == NULL)
-    DEFER(FAILED_WINDOW_ALLOCATION);
+    return FAILED_WINDOW_ALLOCATION;
 
-  window->colors = (int *)malloc(sizeof(int) * size);
+  window->colors = (u8 *)malloc(sizeof(u8) * size);
   if (window->colors == NULL) {
     free(window->pixels);
-    DEFER(FAILED_WINDOW_ALLOCATION);
+    return FAILED_WINDOW_ALLOCATION;
   }
 
   window->height = height;
-  window->width = (int)(width * HEIGHT_TO_WIDTH_PIXEL_DIMENSION_RATIO);
-
-defer:
-  return QUILL_ERROR;
+  window->width = (u8)(width * HEIGHT_TO_WIDTH_PIXEL_DIMENSION_RATIO);
+  return QUILL_SUCCESS;
 }
 
-int free_Window(Quill_Window *window) {
-  int QUILL_ERROR = 0;
+int cleanUp_Window(QuillWindow *window) {
   if (window == NULL)
-    DEFER(WINDOW_IS_NULL);
+    return WINDOW_IS_NULL;
   if (window->pixels == NULL)
-    DEFER(WINDOW_PIXELS_IS_NULL);
+    return WINDOW_PIXELS_IS_NULL;
 
   free(window->pixels);
-defer:
-  return QUILL_ERROR;
+  return QUILL_SUCCESS;
 }
 
-int fill_Window(Quill_Window *window, const int color, const char fill) {
-  int QUILL_ERROR = QUILL_SUCCESS;
+int fill_Window(QuillWindow *window, const int color, const char fill) {
   if (window == NULL)
-    DEFER(WINDOW_IS_NULL);
+    return WINDOW_IS_NULL;
   if (window->pixels == NULL)
-    DEFER(WINDOW_PIXELS_IS_NULL);
+    return WINDOW_PIXELS_IS_NULL;
   else if (window->colors == NULL)
-    DEFER(WINDOW_COLORS_IS_NULL);
+    return WINDOW_COLORS_IS_NULL;
 
-  for (u32 i = 0; i < window->height * window->width; i++) {
+  for (u32 i = 0; i < window->height * window->width; ++i) {
     window->pixels[i] = fill;
     window->colors[i] = color;
   }
 
-defer:
-  return QUILL_ERROR;
+  return QUILL_SUCCESS;
 }
 
-int clear_Window(Quill_Window *window) {
-  int QUILL_ERROR = QUILL_SUCCESS;
+int clear_Window(QuillWindow *window) {
   if (window == NULL)
-    DEFER(WINDOW_IS_NULL);
+    return WINDOW_IS_NULL;
   if (window->pixels == NULL)
-    DEFER(WINDOW_PIXELS_IS_NULL);
+    return WINDOW_PIXELS_IS_NULL;
   else if (window->colors == NULL)
-    DEFER(WINDOW_COLORS_IS_NULL);
+    return WINDOW_COLORS_IS_NULL;
 
-  for (u32 i = 0; i < window->height * window->width; i++) {
+  for (u32 i = 0; i < window->height * window->width; ++i) {
     window->pixels[i] = ' ';
     window->colors[i] = 0;
   }
 
-defer:
-  return QUILL_ERROR;
+  return QUILL_SUCCESS;
 }
 
-int output_Window(Quill_Window *window, const bool reset_color) {
-  int QUILL_ERROR = QUILL_SUCCESS;
+int output_Window(QuillWindow *window, const bool reset_color) {
   if (window == NULL)
-    DEFER(WINDOW_IS_NULL);
+    return WINDOW_IS_NULL;
   if (window->pixels == NULL)
-    DEFER(WINDOW_PIXELS_IS_NULL);
+    return WINDOW_PIXELS_IS_NULL;
 
-  for (u32 h = 0; h < window->height; h++) {
-    for (u32 w = 0; w < window->width; w++) {
+  for (u32 h = 0; h < window->height; ++h) {
+    for (u32 w = 0; w < window->width; ++w) {
       const char *color_code;
       switch (window->colors[h * window->width + w]) {
       case ANSI_RED:
@@ -139,39 +130,23 @@ int output_Window(Quill_Window *window, const bool reset_color) {
     write(STDOUT_FILENO, ANSI_COLOR_WHITE, strlen(ANSI_COLOR_WHITE));
   }
 
-defer:
-  return QUILL_ERROR;
+  return QUILL_SUCCESS;
 }
 
-int fast_output_Window(Quill_Window *window) {
-  int QUILL_ERROR = QUILL_SUCCESS;
+int fast_output_Window(QuillWindow *window) {
   if (window == NULL)
-    DEFER(WINDOW_IS_NULL);
+    return WINDOW_IS_NULL;
   if (window->pixels == NULL)
-    DEFER(WINDOW_PIXELS_IS_NULL);
+    return WINDOW_PIXELS_IS_NULL;
 
-  for (u32 h = 0; h < window->height; h++) {
-    for (u32 w = 0; w < window->width; w++) {
+  for (u32 h = 0; h < window->height; ++h) {
+    for (u32 w = 0; w < window->width; ++w) {
       write(STDOUT_FILENO, &window->pixels[h * window->width + w], 1);
     }
     write(STDOUT_FILENO, "\n", 1);
   }
 
-defer:
-  return QUILL_ERROR;
+  return QUILL_SUCCESS;
 }
 
-#else
-
-/*
-
-typedef struct {
-  u32 height, width;
-  uint32_t *pixels;
-} Quill_Window;
-
-*/
-
-#endif // QUILL_ASCII_
-
-#endif // QUILL_WINDOW_H_
+#endif // QUILL_ASCII_WINDOW_H_

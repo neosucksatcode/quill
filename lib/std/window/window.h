@@ -1,0 +1,3 @@
+#ifndef QUILL_STD_WINDOW_H_
+#define QUILL_STD_WINDOW_H_
+#endif // QUILL_STD_WINDOW_H_
