@@ -18,9 +18,9 @@ Quill is designed to be a standalone graphics library which contains fascilities
 4. Minimal Debugging
    The majority of all the functions in Quill return debugging codes to allow for easier error handling. Some functions such as `create_Window()` do not return a debugging code, in this case it returns a `QuillWindow` pointer. One function: `clear_Terminal()` takes no parameters and returns nothing (`void`).
 
-# The Library
+## The Library
 
-## define.h
+### define.h
 
 *define.h* contains all of the general defintion which are used in multiple places in the codebase.
 
@@ -33,4 +33,5 @@ typedef unsigned int u32;
 
 #endif // QUILL_DEFINE_H_
 ```
+
 Currently the types defined in *define.h* are `u8` and `u32`.
