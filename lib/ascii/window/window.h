@@ -27,9 +27,16 @@
 #define ANSI_YELLOW 4
 #define ANSI_MAGENTA 5
 
+typedef struct {
+  u32 height, width;
+  char *pixels;
+  u8 *colors;
+} QuillWindow;
+
 void clear_Terminal(void) { puts("\033[2J\033[H"); }
 
-int init_Window(QuillWindow *window, const u32 width, const u32 height) {
+int init_Window(QuillWindow *window, const u32 width, const u32 height)
+{
   size_t size =
       (size_t)(height * width * HEIGHT_TO_WIDTH_PIXEL_DIMENSION_RATIO);
 
@@ -48,17 +55,68 @@ int init_Window(QuillWindow *window, const u32 width, const u32 height) {
   return QUILL_SUCCESS;
 }
 
-int cleanUp_Window(QuillWindow *window) {
+QuillWindow *create_Window(const u32 width, const u32 height)
+{
+  QuillWindow *window = (QuillWindow*) malloc(sizeof(QuillWindow));
   if (window == NULL)
-    return WINDOW_IS_NULL;
-  if (window->pixels == NULL)
-    return WINDOW_PIXELS_IS_NULL;
+    return FAILED_WINDOW_ALLOCATION;
 
-  free(window->pixels);
+  size_t size =
+      (size_t)(height * width * HEIGHT_TO_WIDTH_PIXEL_DIMENSION_RATIO);
+
+  window->pixels = (char *)malloc(sizeof(char) * size);
+  if (window->pixels == NULL) {
+    free(window);
+    return FAILED_WINDOW_ALLOCATION;
+  }
+
+  window->colors = (u8 *)malloc(sizeof(u8) * size);
+  if (window->colors == NULL) {
+    free(window->pixels);
+    free(window);
+    return FAILED_WINDOW_ALLOCATION;
+  }
+
+  window->height = height;
+  window->width = (u8)(width * HEIGHT_TO_WIDTH_PIXEL_DIMENSION_RATIO);
   return QUILL_SUCCESS;
 }
 
-int fill_Window(QuillWindow *window, const int color, const char fill) {
+int cleanUp_Window(QuillWindow *window)
+{
+  if (window == NULL)
+    return WINDOW_IS_NULL;
+
+  if (window->pixels != NULL) {
+    free(window->pixels);
+  }
+  
+  if (window->colors != NULL) {
+    free(window->colors);
+  }
+
+  return QUILL_SUCCESS;
+}
+
+int free_Window(QuillWindow *window)
+{
+  if (window == NULL)
+    return WINDOW_IS_NULL;
+
+  if (window->pixels != NULL) {
+    free(window->pixels);
+  }
+  
+  if (window->colors != NULL) {
+    free(window->colors);
+  }
+
+  free(window);
+  return QUILL_SUCCESS;
+}
+
+int fill_Window(QuillWindow *window, const int color, const char fill)
+{
   if (window == NULL)
     return WINDOW_IS_NULL;
   if (window->pixels == NULL)
@@ -74,7 +132,8 @@ int fill_Window(QuillWindow *window, const int color, const char fill) {
   return QUILL_SUCCESS;
 }
 
-int clear_Window(QuillWindow *window) {
+int clear_Window(QuillWindow *window)
+{
   if (window == NULL)
     return WINDOW_IS_NULL;
   if (window->pixels == NULL)
@@ -90,7 +149,8 @@ int clear_Window(QuillWindow *window) {
   return QUILL_SUCCESS;
 }
 
-int output_Window(QuillWindow *window, const bool reset_color) {
+int output_Window(QuillWindow *window, const bool reset_color)
+{
   if (window == NULL)
     return WINDOW_IS_NULL;
   if (window->pixels == NULL)
@@ -133,7 +193,8 @@ int output_Window(QuillWindow *window, const bool reset_color) {
   return QUILL_SUCCESS;
 }
 
-int fast_output_Window(QuillWindow *window) {
+int fast_output_Window(QuillWindow *window)
+{
   if (window == NULL)
     return WINDOW_IS_NULL;
   if (window->pixels == NULL)
