@@ -11,7 +11,7 @@
 
 #include "../config.h"
 #include "../../return.h"
-#include "../define/define.h"
+#include "../../define.h"
 
 #define ANSI_COLOR_WHITE "\033[0m"
 #define ANSI_COLOR_RED "\x1b[31m"
@@ -59,7 +59,7 @@ QuillWindow *create_Window(const u32 width, const u32 height)
 {
   QuillWindow *window = (QuillWindow*) malloc(sizeof(QuillWindow));
   if (window == NULL)
-    return FAILED_WINDOW_ALLOCATION;
+    return NULL;
 
   size_t size =
       (size_t)(height * width * HEIGHT_TO_WIDTH_PIXEL_DIMENSION_RATIO);
@@ -67,19 +67,19 @@ QuillWindow *create_Window(const u32 width, const u32 height)
   window->pixels = (char *)malloc(sizeof(char) * size);
   if (window->pixels == NULL) {
     free(window);
-    return FAILED_WINDOW_ALLOCATION;
+    return NULL;
   }
 
   window->colors = (u8 *)malloc(sizeof(u8) * size);
   if (window->colors == NULL) {
     free(window->pixels);
     free(window);
-    return FAILED_WINDOW_ALLOCATION;
+    return NULL;
   }
 
   window->height = height;
   window->width = (u8)(width * HEIGHT_TO_WIDTH_PIXEL_DIMENSION_RATIO);
-  return QUILL_SUCCESS;
+  return window;
 }
 
 int cleanUp_Window(QuillWindow *window)

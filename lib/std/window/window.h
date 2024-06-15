@@ -2,10 +2,10 @@
 #define QUILL_STD_WINDOW_H_
 
 #pragma once
-#include "../define/define.h"
+#include "../../define.h"
 typedef struct {
   u32 height, width;
-  uint32_t *pixels;
+  u32 *pixels;
 } QuillWindow;
 
 #endif // QUILL_STD_WINDOW_H_

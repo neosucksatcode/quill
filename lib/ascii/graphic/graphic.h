@@ -10,7 +10,7 @@
 
 #include "../config.h"
 #include "../../return.h"
-#include "../define/define.h"
+#include "../../define.h"
 #include "../geometry/geometry.h"
 
 int plot_Vertex(QuillWindow *window, u8 color, const char fill, float x,
