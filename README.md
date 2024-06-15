@@ -34,7 +34,7 @@ int main(void) {
 }
 ```
 
-By default a constant named `HEIGHT_TO_WIDTH_PIXEL_DIMENSION_RATIO` is set to equal `1.8f` and should be changed before compiling to reflect what your terminals ratio between character height and width are. This will later be replaced by a function for initializing Quill: `init_Quill()`.
+By default a constant named `HEIGHT_TO_WIDTH_PIXEL_DIMENSION_RATIO` is set to equal `1.8f` and should be changed before compiling to reflect what your terminal's ratio between character height and width is. This will later be replaced by a function for initializing Quill: `init_Quill()`.
 
 ### *STD*
 
@@ -51,7 +51,7 @@ int main(void) {
 }
 ```
 
-Now compile the translation unit (C file) to an executable using your favorite compiler. A good practice it to enable all warnings. E.g:
+Now compile the translation unit (C file) to an executable using your favorite compiler. A good practice is to enable all warnings. E.g:
 
 _Using GCC:_
 
@@ -61,7 +61,7 @@ _Using GCC:_
 
 ### define.h
 
-*define.h* contains all of the general defintion which are used in multiple places in the codebase.
+*define.h* contains all of the general defintions which are used in multiple places in the codebase.
 
 *'General Types and Debugging Codes'*
 
@@ -105,7 +105,7 @@ typedef struct {
 } QuillWindow;
 ```
 
-`QuillWindow` is a typedefined struct which contains four member variables in the ASCII defintion and three in the STD defintion. The variables `height` and `width` are both of the `u32` and they specify the dimensions of the window. In the ASCII definition `pixels` is a `char*` which stores pixels as ASCII characters. In the STD definition `pixels` is a `u32*` which stores pixels in hexadecimal format e.g '0x000000'.
+`QuillWindow` is a type defined struct which contains four member variables in the ASCII defintion and three in the STD defintion. The variables `height` and `width` are both of the `u32` type and specify the dimensions of the window. In the ASCII definition `pixels` is a `char*` which stores pixels as ASCII characters. In the STD definition `pixels` is a `u32*` which stores pixels in hexadecimal format e.g '0x000000'.
 
 #### *'clear_Terminal()'*
 
@@ -121,7 +121,7 @@ void clear_Terminal(void) { puts("\033[2J\033[H"); }
 void clear_Screen(void) { ... }
 ```
 
-`clear_Terminal()` takes no arguments and returns nothing. It simply clears the terminal/screen of any content;
+`clear_Terminal()` and `clear_Screen()` take no arguments and return nothing. They simply clear the terminal or screen of any content.
 
 #### *'init_Window()'*
 
@@ -129,7 +129,7 @@ void clear_Screen(void) { ... }
 int init_Window(QuillWindow *window, const u32 width, const u32 height) { ... }
 ```
 
-`init_Window()` takes a `QuillWindow*` window, a `u32` width and a `u32` height as arguments. It initializes all member variables in a **_stack_**allocated `QuillWindow` and dynamically allocates memory on the heap for the pixels (and colors). Notice that the function call is identical between the ASCII definition and the STD definition however the implementations are marginally different. Returns `QUILL_SUCCESS` if successful, `FAILED_WINDOW_ALLOCATION` if not. 
+`init_Window()` takes a `QuillWindow*` window, a `u32` width and a `u32` height as arguments. It initializes all member variables in a *__stack__* *__allocated__* `QuillWindow` and dynamically allocates memory on the heap for the pixels (and colors). Notice that the function call is identical between the ASCII definition and the STD definition however the implementations are marginally different. Returns `QUILL_SUCCESS` if successful, `FAILED_WINDOW_ALLOCATION` if not. 
 
 #### *'create_Window()'*
 
@@ -144,7 +144,7 @@ QuillWindow *create_Window(const u32 width, const u32 height) { ... }
 ```c
 int cleanUp_Window(QuillWindow *window) { ... }
 ```
-`cleanUp_Window` takes a `QuillWindow*` window which points to a **_stack_**allocated `QuillWindow` as an argument and deallocates its member variables. Returns `QUILL_SUCCESS` if successful, `WINDOW_IS_NULL` if the `QuillWindow*` is `NULL`.
+`cleanUp_Window` takes a `QuillWindow*` window which points to a *__stack__* *__allocated__* `QuillWindow` as an argument and deallocates its member variables. Returns `QUILL_SUCCESS` if successful, `WINDOW_IS_NULL` if the `QuillWindow*` is `NULL`.
 
 #### *'free_Window()'*
 
@@ -152,7 +152,7 @@ int cleanUp_Window(QuillWindow *window) { ... }
 int free_Window(QuillWindow *window) { ... }
 ```
 
-`free_Window()` takes a `QuillWindow*` window which points to a **_heap_**allocated `QuillWindow` as an argument and deallocates its member variables as well as it self. Returns `QUILL_SUCCESS` if successful, `WINDOW_IS_NULL` if the `QuillWindow*` is `NULL`.
+`free_Window()` takes a `QuillWindow*` window which points to a *__heap__* *__allocated__* `QuillWindow` as an argument and deallocates its member variables as well as it self. Returns `QUILL_SUCCESS` if successful, `WINDOW_IS_NULL` if the `QuillWindow*` is `NULL`.
 
 #### *'fill_Window()'*
 
@@ -168,7 +168,7 @@ int fill_Window(QuillWindow *window, const u8 color, const char fill) { ... }
 int fill_Window(QuillWindow *window, const u32 color) { ... }
 ```
 
-`fill_Window()` in the ASCII definition takes a `QuillWindow*` window, a `u8` color and a `char` fill as arguments. It fills the window's `pixels` with the character and appliet the color to all cells inside `colors`. Returns `QUILL_SUCCESS` if successful, `WINDOW_IS_NULL` if the `QuillWindow*` is `NULL`, `WINDOW_PIXELS_IS_NULL` if `pixels` is `NULL` or `WINDOW_COLORS_IS_NULL` if `colors` is `NULL`. In the STD definition it takes a `QuillWindow*` and a `u32` color as arguments. Returns `QUILL_SUCCESS` if successful, `WINDOW_IS_NULL` if the `QuillWindow*` is `NULL` or `WINDOW_PIXELS_IS_NULL` if `pixels` is `NULL`. 
+`fill_Window()` in the ASCII definition takes a `QuillWindow*` window, a `u8` color and a `char` fill as arguments. It fills the window's `pixels` with the character and appliet the color to all cells inside `colors`. Returns `QUILL_SUCCESS` if successful, `WINDOW_IS_NULL` if the `QuillWindow*` is `NULL`, `WINDOW_PIXELS_IS_NULL` if `pixels` is `NULL` or `WINDOW_COLORS_IS_NULL` if `colors` is `NULL`. In the STD definition it takes a `QuillWindow*` and a `u32` color as arguments. Returns `QUILL_SUCCESS` if successful, `WINDOW_IS_NULL` if the `QuillWindow*` is `NULL` or `WINDOW_PIXELS_IS_NULL` if `pixels` is `NULL`.
 
 #### *'clear_Window()'*
 
