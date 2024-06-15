@@ -8,7 +8,7 @@ Quill is designed to be a standalone graphics library which contains fascilities
 
 1. **Portability** ~ Compile `quill.h` to any platform, the library is written using souly standard C.
 
-2. **Opensource** ~ Quill is meant for everyone, feel free to rewrite the library to better fit your needs.
+2. **Open source** ~ Quill is meant for everyone, feel free to rewrite the library to better fit your needs.
 
 3. **Optional Speed** ~ Quill's ASCII library supports different means of rendering, most notably `fast_output_window()` which prints the characters without any colors. The function is designed to output each frame as quickly as possible.
 
