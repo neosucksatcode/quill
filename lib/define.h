@@ -1,5 +1,5 @@
-#ifndef QUILL_RETURN_H_
-#define QUILL_RETURN_H_
+#ifndef QUILL_DEFINE_H_
+#define QUILL_DEFINE_H_
 
 #define QUILL_SUCCESS 1
 #define WINDOW_IS_NULL -1
@@ -10,4 +10,8 @@
 
 #define VERTEX_OUT_OF_BOUNDS -5
 
-#endif
+typedef unsigned char u8;
+typedef unsigned int u32;
+// ...
+
+#endif // QUILL_DEFINE_H_

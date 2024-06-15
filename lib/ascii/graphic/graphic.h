@@ -9,8 +9,7 @@
 #include <string.h>
 
 #include "../config.h"
-#include "../../return.h"
-#include "../define/define.h"
+#include "../../define.h"
 #include "../geometry/geometry.h"
 
 int plot_Vertex(QuillWindow *window, u8 color, const char fill, float x,
@@ -66,7 +65,7 @@ int draw_Vector(QuillWindow *window, u8 color, const char fill, float x1,
   return QUILL_SUCCESS;
 }
 
-int draw_Triangle(QuillWindow *window, u8 color, const char fill, float v1x,
+int draw_Triangle(QuillWindow *window, const u8 color, const char fill, float v1x,
                   float v1y, float v2x, float v2y, float v3x, float v3y)
 {
   int state = QUILL_SUCCESS;
@@ -76,7 +75,7 @@ int draw_Triangle(QuillWindow *window, u8 color, const char fill, float v1x,
   return state;
 }
 
-int write_Text(QuillWindow *window, u8 color, char *text, float x1,
+int write_Text(QuillWindow *window, const u8 color, char *text, float x1,
                float y1, float x2, float y2)
 {
   if (window == NULL) {
