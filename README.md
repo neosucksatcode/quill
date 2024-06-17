@@ -8,16 +8,12 @@ Quill is designed to be a standalone graphics library which contains fascilities
 
 1. **Portability** ~ Compile `quill.h` to any platform, the library is written using souly standard C.
 
-2. **Opensource** ~ Quill is meant for everyone, feel free to rewrite the library to better fit your needs.
+2. **Open source** ~ Quill is meant for everyone, feel free to rewrite the library to better fit your needs.
 
 3. **Optional Speed** ~ Quill's ASCII library supports different means of rendering, most notably `fast_output_window()` which prints the characters without any colors. The function is designed to output each frame as quickly as possible.
 
 4. **Minimal Debugging** ~ The majority of all the functions in Quill return debugging codes to allow for easier error handling. Some functions such as `create_Window()` do not return a debugging code, in this case it returns a `QuillWindow*`. One function: `clear_Terminal()` takes no arguments and returns nothing (`void`).
 
-<<<<<<< HEAD
-## The Library
-
-=======
 ## Get Started
 
 Start by cloning this repository into your project, let the new 'quill' folder be its own separate folder. Create a new folder named 'src' in the same scope as the 'quill' folder. Inside the 'src' folder create a C file 'main'. Now open the file. To utilize Quill in your project simply include its header and define what library you want to use.
@@ -63,7 +59,6 @@ _Using GCC:_
 
 ## The Library
 
->>>>>>> bf4b9bb169e7bbd54a33c9b69dc216f111b48b98
 ### define.h
 
 *define.h* contains all of the general defintion which are used in multiple places in the codebase.
@@ -83,9 +78,6 @@ typedef unsigned int u32;
 // ...
 ```
 
-<<<<<<< HEAD
-Currently the types defined in *define.h* are `u8` and `u32`.
-=======
 Currently the only types defined in *define.h* are `u8` and `u32`.
 
 ### window.h
@@ -203,4 +195,3 @@ int fast_output_Window(QuillWindow *window) { ... }
 ```
 
 `fast_output_Window()` is also only defined in the ASCII side of the quill library and it takes a `QuillWindow*` window as an argument. The function prints out all of the characters in `pixels` and neglects the coresponding color in `colors`. Returns `QUILL_SUCCESS` if successful, `WINDOW_IS_NULL` if the `QuillWindow*` is `NULL` or `WINDOW_PIXELS_IS_NULL` if `pixels` is `NULL`.
->>>>>>> bf4b9bb169e7bbd54a33c9b69dc216f111b48b98
