@@ -75,7 +75,7 @@ int draw_Triangle(QuillWindow *window, const u8 color, const char fill, float v1
   return state;
 }
 
-int write_Text(QuillWindow *window, const u8 color, char *text, float x1,
+int write_Text(QuillWindow *window, const u8 color, const char *text, float x1,
                float y1, float x2, float y2)
 {
   if (window == NULL) {
