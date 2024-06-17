@@ -25,6 +25,7 @@ Start by cloning this repository into your project, let the new 'quill' folder b
 #include "../quill/quill.h"
 
 int main(void) {
+  init_Quill(1.8f);
   QuillWindow *window = createWindow(30, 30);
   clear_Window(window);
   fill_Window(window, ANSI_BLUE, '.');
@@ -42,6 +43,7 @@ By default a constant named `HEIGHT_TO_WIDTH_PIXEL_DIMENSION_RATIO` is set to eq
 #include "../quill/quill.h"
 
 int main(void) {
+  init_Quill();
   QuillWindow *window = createWindow(30, 30);
   clear_Window(window);
   fill_Window(window, 0x000000);
