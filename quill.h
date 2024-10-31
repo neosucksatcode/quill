@@ -11,9 +11,8 @@
 
 float HEIGHT_TO_WIDTH_PIXEL_DIMENSION_RATIO = 1.8f;
 
-int Q_init(const float ratio) {
+void Q_init(const float ratio) {
   HEIGHT_TO_WIDTH_PIXEL_DIMENSION_RATIO = ratio;
-  return 0;
 }
 
 #else
