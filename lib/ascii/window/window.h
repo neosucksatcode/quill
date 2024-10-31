@@ -23,17 +23,17 @@ typedef struct {
   WBuffer *buffers[2];
 } QWindow;
 
-// `Q_windowFront` gets the pointer to the front buffer.
+// `Q_windowFront()` gets the pointer to the front buffer.
 WBuffer* Q_windowFront(QWindow *window) {
   return window->buffers[window->front_idx];
 }
 
-// `Q_windowBack` gets the pointer to the back buffer.
+// `Q_windowBack()` gets the pointer to the back buffer.
 WBuffer* Q_windowBack(QWindow *window) {
   return window->buffers[window->back_idx];
 }
 
-// `Q_createWBuffer` creates a `WBuffer` of provided width and height.
+// `Q_createWBuffer()` creates a `WBuffer` of provided width and height.
 WBuffer* Q_createWBuffer(unsigned int width, unsigned int height) {
   WBuffer *buffer = (WBuffer*)malloc(sizeof(WBuffer));
   if (buffer == NULL)
@@ -53,7 +53,7 @@ WBuffer* Q_createWBuffer(unsigned int width, unsigned int height) {
   return buffer;
 }
 
-// `Q_createWindow` creates a `QWindow` of provided width and height.
+// `Q_createWindow()` creates a `QWindow` of provided width and height.
 QWindow* Q_createWindow(unsigned int width, unsigned int height) {
   QWindow *window = (QWindow*)malloc(sizeof(QWindow));
   if (window == NULL)
@@ -87,8 +87,8 @@ void __printQWindowToTerminal(WBuffer *buffer) {
   }
 }
 
-// `Q_swapBuffersWindow` swaps the front and back buffer pointers and displays front buffer.
-int Q_swapBuffersWindow(QWindow *window) {
+// `Q_swapBuffers()` swaps the front and back buffer pointers and displays front buffer.
+int Q_swapBuffers(QWindow *window) {
   if (window == NULL)
     return 0;
 
@@ -102,7 +102,7 @@ int Q_swapBuffersWindow(QWindow *window) {
   return 1;
 }
 
-// `Q_freeWindow` deallocates a `QWindow` created by `Q_createWindow`.
+// `Q_freeWindow()` deallocates a `QWindow` created by `Q_createWindow`.
 int Q_freeWindow(QWindow *window) {
   if (window == NULL)
     return 0;
@@ -115,7 +115,7 @@ int Q_freeWindow(QWindow *window) {
   return 1;
 }
 
-// `Q_clearTerminal` clears the terminal
+// `Q_clearTerminal()` clears the terminal
 void Q_clearTerminal(void) { puts("\033[2J\033[H"); }
 
 #endif // QUILL_ASCII_WINDOW_H_

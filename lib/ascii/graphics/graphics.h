@@ -20,7 +20,7 @@ float normalize_y(unsigned int y_height, float y) {
   return ((2 * y) / y_height) - 1;
 }
 
-// `Q_clear` clears a `WBuffer` using the provided fill character
+// `Q_clear()` clears a `WBuffer` using the provided fill character
 int Q_clear(WBuffer *buffer, const char fill) {
   if (buffer == NULL)
     return 0;
@@ -30,7 +30,7 @@ int Q_clear(WBuffer *buffer, const char fill) {
   return 1;
 }
 
-// `Q_plotVertex` takes normalized coordinates [-1, 1] as input.
+// `Q_plotVertex()` takes normalized coordinates [-1, 1] as input.
 int Q_plotVertex(WBuffer *buffer, const char fill, float x, float y) {
   if (buffer == NULL)
     return 0;
@@ -44,7 +44,7 @@ int Q_plotVertex(WBuffer *buffer, const char fill, float x, float y) {
   return 1;
 }
 
-// `Q_drawVector` draws a vector from points (x1, y1) to (x2, y2) using the provided fill character
+// `Q_drawVector()` draws a vector from points (x1, y1) to (x2, y2) using the provided fill character
 int Q_drawVector(
   WBuffer *buffer,
   const char fill,
