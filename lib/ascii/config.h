@@ -1,7 +1,0 @@
-#ifndef QUILL_ASCII_CONFIG_H_
-#define QUILL_ASCII_CONFIG_H_
-
-static float HEIGHT_TO_WIDTH_PIXEL_DIMENSION_RATIO = 1.0f;
-// ...
-
-#endif // QUILL_ASCII_CONFIG_H_
