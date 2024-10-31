@@ -6,12 +6,12 @@
 #ifdef QUILL_ASCII_
 
 #pragma once
-#include "./lib/define.h"
 #include "./lib/ascii/window/window.h"
-#include "./lib/ascii/graphic/graphic.h"
-#include "./lib/ascii/geometry/geometry.h"
+#include "./lib/ascii/graphics/graphics.h"
 
-int init_Quill(const float ratio) {
+float HEIGHT_TO_WIDTH_PIXEL_DIMENSION_RATIO = 1.8f;
+
+int Q_init(const float ratio) {
   HEIGHT_TO_WIDTH_PIXEL_DIMENSION_RATIO = ratio;
   return 0;
 }
@@ -21,9 +21,8 @@ int init_Quill(const float ratio) {
 #include "./lib/define.h"
 #include "./lib/std/window/window.h"
 #include "./lib/std/graphics/graphics.h"
-#include "./lib/std/geometry/geometry.h"
 
-int init_Quill() { return 0; }
+int Q_init() { return 0; }
 
 #endif // QUILL_ASCII_
 #endif // QUILL_H_

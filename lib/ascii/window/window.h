@@ -9,204 +9,113 @@
 #include <unistd.h>
 #include <string.h>
 
-#include "../config.h"
-#include "../../define.h"
+extern float HEIGHT_TO_WIDTH_PIXEL_DIMENSION_RATIO;
 
-#define ANSI_COLOR_WHITE "\033[0m"
-#define ANSI_COLOR_RED "\x1b[31m"
-#define ANSI_COLOR_GREEN "\x1b[32m"
-#define ANSI_COLOR_YELLOW "\x1b[33m"
-#define ANSI_COLOR_BLUE "\x1b[34m"
-#define ANSI_COLOR_MAGENTA "\x1b[35m"
-
-#define ANSI_WHITE 0
-#define ANSI_RED 1
-#define ANSI_GREEN 2
-#define ANSI_BLUE 3
-#define ANSI_YELLOW 4
-#define ANSI_MAGENTA 5
-
+// `WBuffer` is the struct for the front and back buffers
 typedef struct {
-  u32 height, width;
+  unsigned int width, height;
   char *pixels;
-  u8 *colors;
-} QuillWindow;
+} WBuffer;
 
-void clear_Terminal(void) { puts("\033[2J\033[H"); }
+// `QWindow` is the main window struct
+typedef struct {
+  unsigned int front_idx, back_idx;
+  WBuffer *buffers[2];
+} QWindow;
 
-int init_Window(QuillWindow *window, const u32 width, const u32 height)
-{
-  size_t size =
-      (size_t)(height * width * HEIGHT_TO_WIDTH_PIXEL_DIMENSION_RATIO);
-
-  window->pixels = (char *)malloc(sizeof(char) * size);
-  if (window->pixels == NULL)
-    return FAILED_WINDOW_ALLOCATION;
-
-  window->colors = (u8 *)malloc(sizeof(u8) * size);
-  if (window->colors == NULL) {
-    free(window->pixels);
-    return FAILED_WINDOW_ALLOCATION;
-  }
-
-  window->height = height;
-  window->width = (u8)(width * HEIGHT_TO_WIDTH_PIXEL_DIMENSION_RATIO);
-  return QUILL_SUCCESS;
+// `Q_windowFront` gets the pointer to the front buffer.
+WBuffer* Q_windowFront(QWindow *window) {
+  return window->buffers[window->front_idx];
 }
 
-QuillWindow *create_Window(const u32 width, const u32 height)
-{
-  QuillWindow *window = (QuillWindow*) malloc(sizeof(QuillWindow));
+// `Q_windowBack` gets the pointer to the back buffer.
+WBuffer* Q_windowBack(QWindow *window) {
+  return window->buffers[window->back_idx];
+}
+
+// `Q_createWBuffer` creates a `WBuffer` of provided width and height.
+WBuffer* Q_createWBuffer(unsigned int width, unsigned int height) {
+  WBuffer *buffer = (WBuffer*)malloc(sizeof(WBuffer));
+  if (buffer == NULL)
+    return NULL;
+
+  width = (unsigned int)((float)width * HEIGHT_TO_WIDTH_PIXEL_DIMENSION_RATIO);
+
+  buffer->pixels = (char*)malloc(sizeof(char) * height * width);
+  if (buffer->pixels == NULL) {
+    free(buffer);
+    return NULL;
+  }
+
+  buffer->width = width;
+  buffer->height = height;
+
+  return buffer;
+}
+
+// `Q_createWindow` creates a `QWindow` of provided width and height.
+QWindow* Q_createWindow(unsigned int width, unsigned int height) {
+  QWindow *window = (QWindow*)malloc(sizeof(QWindow));
   if (window == NULL)
     return NULL;
 
-  size_t size =
-      (size_t)(height * width * HEIGHT_TO_WIDTH_PIXEL_DIMENSION_RATIO);
-
-  window->pixels = (char *)malloc(sizeof(char) * size);
-  if (window->pixels == NULL) {
+  window->buffers[0] = Q_createWBuffer(width, height);
+  if (window->buffers[0] == NULL) {
     free(window);
     return NULL;
   }
 
-  window->colors = (u8 *)malloc(sizeof(u8) * size);
-  if (window->colors == NULL) {
-    free(window->pixels);
+  window->buffers[1] = Q_createWBuffer(width, height);
+  if (window->buffers[1] == NULL) {
+    free(window->buffers[0]);
     free(window);
     return NULL;
   }
 
-  window->height = height;
-  window->width = (u8)(width * HEIGHT_TO_WIDTH_PIXEL_DIMENSION_RATIO);
+  window->front_idx = 0;
+  window->back_idx = 1;
+  
   return window;
 }
 
-int cleanUp_Window(QuillWindow *window)
-{
-  if (window == NULL)
-    return WINDOW_IS_NULL;
-
-  if (window->pixels != NULL) {
-    free(window->pixels);
+void __printQWindowToTerminal(WBuffer *buffer) {
+  for (unsigned int h = 0; h < buffer->height; ++h) {
+    for (unsigned int w = 0; w < buffer->width; ++w) {
+      write(STDOUT_FILENO, &buffer->pixels[h * buffer->width + w], 1);
+    }
+    write(STDOUT_FILENO, "\n", 1);
   }
-  
-  if (window->colors != NULL) {
-    free(window->colors);
-  }
-
-  return QUILL_SUCCESS;
 }
 
-int free_Window(QuillWindow *window)
-{
+// `Q_swapBuffersWindow` swaps the front and back buffer pointers and displays front buffer.
+int Q_swapBuffersWindow(QWindow *window) {
   if (window == NULL)
-    return WINDOW_IS_NULL;
+    return 0;
 
-  if (window->pixels != NULL) {
-    free(window->pixels);
-  }
+  unsigned int idx = window->front_idx;
+  window->front_idx = window->back_idx;
+  window->back_idx = idx;
   
-  if (window->colors != NULL) {
-    free(window->colors);
-  }
+  // Print the front buffer to the terminal
+  __printQWindowToTerminal(window->buffers[window->front_idx]);
 
+  return 1;
+}
+
+// `Q_freeWindow` deallocates a `QWindow` created by `Q_createWindow`.
+int Q_freeWindow(QWindow *window) {
+  if (window == NULL)
+    return 0;
+
+  free(window->buffers[0]->pixels);
+  free(window->buffers[1]->pixels);
+  free(window->buffers[0]);
+  free(window->buffers[1]);
   free(window);
-  return QUILL_SUCCESS;
+  return 1;
 }
 
-int fill_Window(QuillWindow *window, const u8 color, const char fill)
-{
-  if (window == NULL)
-    return WINDOW_IS_NULL;
-  if (window->pixels == NULL)
-    return WINDOW_PIXELS_IS_NULL;
-  else if (window->colors == NULL)
-    return WINDOW_COLORS_IS_NULL;
-
-  for (u32 i = 0; i < window->height * window->width; ++i) {
-    window->pixels[i] = fill;
-    window->colors[i] = color;
-  }
-
-  return QUILL_SUCCESS;
-}
-
-int clear_Window(QuillWindow *window)
-{
-  if (window == NULL)
-    return WINDOW_IS_NULL;
-  if (window->pixels == NULL)
-    return WINDOW_PIXELS_IS_NULL;
-  else if (window->colors == NULL)
-    return WINDOW_COLORS_IS_NULL;
-
-  for (u32 i = 0; i < window->height * window->width; ++i) {
-    window->pixels[i] = ' ';
-    window->colors[i] = ANSI_WHITE;
-  }
-
-  return QUILL_SUCCESS;
-}
-
-int output_Window(QuillWindow *window, const bool reset_color)
-{
-  if (window == NULL)
-    return WINDOW_IS_NULL;
-  if (window->pixels == NULL)
-    return WINDOW_PIXELS_IS_NULL;
-
-  for (u32 h = 0; h < window->height; ++h) {
-    for (u32 w = 0; w < window->width; ++w) {
-      const char *color_code;
-      switch (window->colors[h * window->width + w]) {
-      case ANSI_RED:
-        color_code = ANSI_COLOR_RED;
-        break;
-      case ANSI_GREEN:
-        color_code = ANSI_COLOR_GREEN;
-        break;
-      case ANSI_BLUE:
-        color_code = ANSI_COLOR_BLUE;
-        break;
-      case ANSI_YELLOW:
-        color_code = ANSI_COLOR_YELLOW;
-        break;
-      case ANSI_MAGENTA:
-        color_code = ANSI_COLOR_MAGENTA;
-        break;
-      case ANSI_WHITE:
-      default:
-        color_code = ANSI_COLOR_WHITE;
-        break;
-      }
-      write(STDOUT_FILENO, color_code, strlen(color_code));
-      write(STDOUT_FILENO, &window->pixels[h * window->width + w], 1);
-    }
-    write(STDOUT_FILENO, "\n", 1);
-  }
-
-  if (reset_color) {
-    write(STDOUT_FILENO, ANSI_COLOR_WHITE, strlen(ANSI_COLOR_WHITE));
-  }
-
-  return QUILL_SUCCESS;
-}
-
-int fast_output_Window(QuillWindow *window)
-{
-  if (window == NULL)
-    return WINDOW_IS_NULL;
-  if (window->pixels == NULL)
-    return WINDOW_PIXELS_IS_NULL;
-
-  for (u32 h = 0; h < window->height; ++h) {
-    for (u32 w = 0; w < window->width; ++w) {
-      write(STDOUT_FILENO, &window->pixels[h * window->width + w], 1);
-    }
-    write(STDOUT_FILENO, "\n", 1);
-  }
-
-  return QUILL_SUCCESS;
-}
+// `Q_clearTerminal` clears the terminal
+void Q_clearTerminal(void) { puts("\033[2J\033[H"); }
 
 #endif // QUILL_ASCII_WINDOW_H_

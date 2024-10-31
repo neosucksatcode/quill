@@ -1,3 +1,0 @@
-#ifndef QUILL_STD_GRAPHIC_H_
-#define QUILL_STD_GRAPHIC_H_
-#endif // QUILL_STD_GRAPHIC_H_
