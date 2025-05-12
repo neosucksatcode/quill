@@ -25,7 +25,7 @@ int main(void) {
   QWindow *window = Q_createWindow(40, 40);
   Q_clear(window, ' ');
   Q_drawVector(Q_windowBack(window), '*', -1.0f, -1.0f, 1.0f, 1.0f);
-  Q_swapBuffersWindow(window, true);
+  Q_swapBuffers(window, true);
   Q_freeWindow(window);
   return 0;
 }
